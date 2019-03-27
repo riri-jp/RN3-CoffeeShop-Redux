@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import * as actionCreators from "../../store/actions/types";
 
 // NativeBase Components
 import {
@@ -20,17 +21,29 @@ import styles from "./styles";
 
 //List
 import coffeeshops from "../CoffeeList/list";
+import CartButton from "../CartButton";
 
 class CoffeeDetail extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam("coffeeShop").name,
+      headerRight: <CartButton />
+    };
+  };
   state = {
     drink: "Cappuccino",
-    option: "Small"
+    option: "Small",
+    quantity: 1
   };
 
   changeDrink = value => {
     this.setState({
       drink: value
     });
+  };
+
+  handlePress = () => {
+    this.props.addItemToCart(this.state);
   };
 
   changeOption = value => {
@@ -42,7 +55,7 @@ class CoffeeDetail extends Component {
   render() {
     const { coffeeShops, loading } = this.props.coffeeReducer;
     if (loading) return <Content />;
-    const coffeeshop = coffeeShops[0];
+    const coffeeshop = this.props.navigation.getParam("coffeeShop");
     return (
       <Content>
         <List>
@@ -55,7 +68,7 @@ class CoffeeDetail extends Component {
             </Left>
             <Body />
             <Right>
-              <Thumbnail bordered source={coffeeshop.img} />
+              <Thumbnail bordered source={{ uri: coffeeshop.img }} />
             </Right>
           </ListItem>
           <ListItem style={{ borderBottomWidth: 0 }}>
@@ -86,7 +99,7 @@ class CoffeeDetail extends Component {
               </Picker>
             </Body>
           </ListItem>
-          <Button full danger>
+          <Button full danger onPress={this.handlePress}>
             <Text>Add</Text>
           </Button>
         </List>
@@ -98,5 +111,11 @@ class CoffeeDetail extends Component {
 const mapStateToProps = state => ({
   coffeeReducer: state.coffeeReducer
 });
+const mapDispatchToProps = dispatch => ({
+  addItemToCart: item => dispatch(actionCreators.addItemToCart(item))
+});
 
-export default connect(mapStateToProps)(CoffeeDetail);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CoffeeDetail);

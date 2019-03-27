@@ -9,6 +9,8 @@ import { Container, Header } from "native-base";
 import styles from "./styles";
 
 // Components
+import AppContainer from "../../Navigation";
+
 import CoffeeList from "../CoffeeList";
 import CoffeeCart from "../CoffeeCart";
 import CoffeeDetail from "../CoffeeDetail";
@@ -25,8 +27,8 @@ class HomePage extends Component {
     return (
       <Container style={styles.transparent}>
         <View style={styles.overlay} />
-        <Header style={styles.transparent} />
-        <CoffeeList />
+
+        <AppContainer />
       </Container>
     );
   }
